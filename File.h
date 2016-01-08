@@ -5,15 +5,22 @@
 #include <sys/types.h>
 
 namespace athena {
+    /**
+     * A File represents an open file inside the current OS
+     */
     class File {
         public:
-            File() = default;
+            /**
+             * Create a File object from an existing struct dirent.
+             * Takes ownership of the file if ownsFile is true
+             */
+            File(struct dirent* entity, bool ownsFile = false );
 
-            File(struct dirent* entity ) {
-                if(entity != NULL) {
-                    _entity = entity;
-                }
-            }
+            /*
+             * Create a File object from an existing file descriptor.
+             * Takes ownership of the file descriptor iw ownsFile is true
+             */
+            File(int fileDescriptor, bool ownsFile = false);
 
             char* getName() const noexcept {
                 return _entity->d_name;
@@ -37,8 +44,9 @@ namespace athena {
 
         private:
             struct dirent* _entity; // Pointer to current file entity
+            int _fileDescriptor;
+            bool _ownsFile;
     };
-
 }
 
 #endif
